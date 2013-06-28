@@ -1,0 +1,21 @@
+{
+    "name":        "werkint/httpclient",
+    "type":        "library",
+    "description": "Client for HTTP request",
+    "license":     "own",
+    "authors":     [
+        {
+            "name":  "Bogdan Yurov",
+            "email": "bogdan@yurov.me"
+        }
+    ],
+    "require":     {
+        "guzzle/guzzle": "*",
+        "php":           ">=5.4"
+    },
+    "autoload":    {
+        "psr-0": {
+            "Werkint\\HttpClient": "lib/"
+        }
+    }
+}
