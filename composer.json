@@ -9,7 +9,6 @@
             "email": "bogdan@yurov.me"
         }
     ],
-    "version":     "1.0.0",
     "require":     {
         "guzzle/guzzle": "*",
         "php":           ">=5.4"
