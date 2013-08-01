@@ -10,8 +10,9 @@
         }
     ],
     "require":     {
-        "guzzle/guzzle": "*",
-        "php":           ">=5.4"
+        "guzzle/guzzle":       "*",
+        "symfony/dom-crawler": "*",
+        "php":                 ">=5.4"
     },
     "autoload":    {
         "psr-0": {
