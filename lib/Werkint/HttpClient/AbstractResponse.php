@@ -30,12 +30,11 @@ abstract class AbstractResponse
         if (static::PREFIX && !$noPrefix) {
             $key = static::PREFIX . $key;
         }
-        if (!isset($this->data[$key])) {
+        if (!$this->has($key)) {
             return null;
         }
-        $val = $this->data[$key];
         unset($this->data[$key]);
-        return $val;
+        return $this->get($key);
     }
 
     protected function cleanupData()
@@ -58,6 +57,23 @@ abstract class AbstractResponse
         foreach ($map as $property => $key) {
             $this->$property = $this->fetch($key);
         }
+    }
+
+    // -- Helpers ---------------------------------------
+
+    public function get($key)
+    {
+        return $this->dataRaw[$key];
+    }
+
+    public function has($key)
+    {
+        return isset($this->dataRaw[$key]);
+    }
+
+    public function all()
+    {
+        return $this->getDataRaw();
     }
 
 }
