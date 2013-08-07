@@ -71,9 +71,4 @@ abstract class AbstractResponse
         return isset($this->dataRaw[$key]);
     }
 
-    public function all()
-    {
-        return $this->getDataRaw();
-    }
-
 }

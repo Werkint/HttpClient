@@ -3,8 +3,6 @@ namespace Werkint\HttpClient;
 
 abstract class AbstractCustomResponse extends AbstractResponse
 {
-    const PREFIX_CUSTOM = 'CUSTOM_';
-
     public function __construct(
         array $data
     ) {
@@ -13,13 +11,36 @@ abstract class AbstractCustomResponse extends AbstractResponse
         $this->populateCustomData();
     }
 
+    protected $prefixCustom = 'CUSTOM_';
     protected $customMap = [];
 
     protected function populateCustomData()
     {
         foreach ($this->customMap as $property => $key) {
-            $this->$property = $this->fetch(static::PREFIX_CUSTOM . $key, true);
+            $this->$property = $this->fetch($this->prefixCustom . $key, true);
         }
+    }
+
+    // -- Setters ---------------------------------------
+
+    /**
+     * @param array $customMap
+     * @return $this
+     */
+    public function setCustomMap($customMap)
+    {
+        $this->customMap = $customMap;
+        return $this;
+    }
+
+    /**
+     * @param string $prefixCustom
+     * @return $this
+     */
+    public function setPrefixCustom($prefixCustom)
+    {
+        $this->prefixCustom = $prefixCustom;
+        return $this;
     }
 
 }
