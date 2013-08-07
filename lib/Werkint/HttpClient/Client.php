@@ -10,7 +10,7 @@ class Client extends GuzzleClient
 {
     public function __construct($baseUrl = '', $config = null)
     {
-        parent::__construct($baseUrl = '', $config = null);
+        parent::__construct($baseUrl, $config);
 
         $cookiePlugin = new CookiePlugin(new ArrayCookieJar());
         $this->addSubscriber($cookiePlugin);
@@ -18,10 +18,13 @@ class Client extends GuzzleClient
 
     public function getQuery($url, array $data)
     {
-        return $this->get($url . '?' . http_build_query($data))->send();
+        $req = $this->get($url, [], [
+            'query' => $data
+        ]);
+        return $req->send()->getBody(true);
     }
 
-    public function parseForm(array $data)
+    public function parseForm($data)
     {
         $doc = new Crawler();
         $doc->addHtmlContent($data);
