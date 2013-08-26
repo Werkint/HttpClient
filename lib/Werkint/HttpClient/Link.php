@@ -38,11 +38,28 @@ class Link
         $this->link = curl_init();
         curl_setopt($this->link, CURLOPT_COOKIEFILE, $this->cookie);
         curl_setopt($this->link, CURLOPT_COOKIEJAR, $this->cookie);
-        curl_setopt($this->link, CURLOPT_HTTPHEADER, [
-            'Content-Type:application/x-www-form-urlencoded; charset=UTF-8',
-            'User-Agent:Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.52 Safari/537.36',
-            'Connection:keep-alive',
-        ]);
+        curl_setopt($this->link, CURLOPT_POST, true);
+        curl_setopt($this->link, CURLOPT_RETURNTRANSFER, true);
+    }
+
+    public function setHeadersAjax()
+    {
+        $this->headers = [
+            'Accept'           => 'application/json',
+            'Content-Type'     => 'application/x-www-form-urlencoded; charset=UTF-8',
+            'User-Agent'       => 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.71 Safari/537.36',
+            'Connection'       => 'keep-alive',
+            'X-Requested-With' => 'XMLHttpRequest',
+        ];
+    }
+
+    public function setHeadersHtml()
+    {
+        $this->headers = [
+            'Accept'     => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'User-Agent' => 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.71 Safari/537.36',
+            'Connection' => 'keep-alive',
+        ];
     }
 
     protected function disconnect()
@@ -56,14 +73,26 @@ class Link
         $this->connect();
     }
 
+    public $headers = [];
+
     public function postRaw($link, $format, $data)
     {
-        curl_setopt($this->link, CURLOPT_POST, true);
         $link = $this->base . ($link === '' || substr($link, 0, 1) == '/' ? $link : '/' . $link);
         curl_setopt($this->link, CURLOPT_URL, $link);
         curl_setopt($this->link, CURLOPT_POSTFIELDS, $data);
-        curl_setopt($this->link, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($this->link, CURLOPT_TIMEOUT, 6);
+        $hdr = [];
+        foreach ($this->headers as $k => $v) {
+            $hdr[] = $k . ':' . $v;
+        }
+        curl_setopt($this->link, CURLOPT_HTTPHEADER, $hdr);
+
         $ret = curl_exec($this->link);
+
+        if (curl_errno($this->link)) {
+            //die('Да ебать нахуй');
+            throw new \Exception('Curl error: ' . curl_error($this->link));
+        }
 
         return $format ? new Response($ret, $format, $link) : null;
     }
@@ -77,6 +106,13 @@ class Link
     public function post($link, $format = null, array $data = [])
     {
         $data = http_build_query($data);
+
+        if ($format == 'json') {
+            $this->setHeadersAjax();
+        } else {
+            $this->setHeadersHtml();
+        }
+
 
         return $this->postRaw($link, $format, $data);
     }

@@ -11,8 +11,15 @@ class Response
         $data, $format, $link
     ) {
         $this->format = $format;
-        $this->data = $data;
         $this->link = $link;
+
+        $this->dataParsed = $this->data = $data;
+        if ($this->format == 'json') {
+            if ($this->data) {
+                $data = json_decode($this->data);
+                $this->dataParsed = $data && json_last_error() == JSON_ERROR_NONE ? $data : null;
+            }
+        }
     }
 
     public function toArray()
@@ -28,7 +35,7 @@ class Response
 
     public function getData()
     {
-        return $this->data;
+        return $this->dataParsed;
     }
 
     public function getFormat()
