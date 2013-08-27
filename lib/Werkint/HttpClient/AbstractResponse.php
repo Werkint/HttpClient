@@ -13,6 +13,13 @@ abstract class AbstractResponse
         return $this->dataRaw;
     }
 
+    protected $dataParsed;
+
+    public function getDataParsed()
+    {
+        return $this->dataParsed;
+    }
+
     public function __construct(
         array $data
     ) {
@@ -55,7 +62,9 @@ abstract class AbstractResponse
             $map = $this->dataMap;
         }
         foreach ($map as $property => $key) {
-            $this->$property = $this->fetch($key);
+            $val = $this->fetch($key);
+            $this->dataParsed[$property] = $val;
+            $this->$property = $val;
         }
     }
 

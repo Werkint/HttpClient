@@ -3,21 +3,15 @@ namespace Werkint\HttpClient;
 
 abstract class AbstractCustomResponse extends AbstractResponse
 {
-    public function __construct(
-        array $data
-    ) {
-        parent::__construct($data);
-
-        $this->populateCustomData();
-    }
-
-    protected $prefixCustom = 'CUSTOM_';
+    protected $prefixCustom = null;
     protected $customMap = [];
 
-    protected function populateCustomData()
+    public function populateCustomData()
     {
         foreach ($this->customMap as $property => $key) {
-            $this->$property = $this->fetch($this->prefixCustom . $key, true);
+            $val = $this->fetch($this->prefixCustom . $key, true);
+            $this->dataParsed['_custom_' . $property] = $val;
+            $this->$property = $val;
         }
     }
 
