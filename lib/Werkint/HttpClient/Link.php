@@ -10,10 +10,14 @@ class Link
 {
     protected $cookiePrefix;
     protected $base;
+    protected $timeout;
 
-    public function __construct($base)
-    {
+    public function __construct(
+        $base,
+        $timeout = 6
+    ) {
         $this->base = $base;
+        $this->timeout = $timeout;
         $this->cookie = '/tmp/httpclient-tmp-' . sha1(microtime(true) . $base);
 
         $this->connect();
@@ -40,6 +44,7 @@ class Link
         curl_setopt($this->link, CURLOPT_COOKIEJAR, $this->cookie);
         curl_setopt($this->link, CURLOPT_POST, true);
         curl_setopt($this->link, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($this->link, CURLOPT_TIMEOUT, $this->timeout);
     }
 
     public function setHeadersAjax()
@@ -80,7 +85,6 @@ class Link
         $link = $this->base . ($link === '' || substr($link, 0, 1) == '/' ? $link : '/' . $link);
         curl_setopt($this->link, CURLOPT_URL, $link);
         curl_setopt($this->link, CURLOPT_POSTFIELDS, $data);
-        curl_setopt($this->link, CURLOPT_TIMEOUT, 6);
         $hdr = [];
         foreach ($this->headers as $k => $v) {
             $hdr[] = $k . ':' . $v;
