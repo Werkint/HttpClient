@@ -67,6 +67,14 @@ class Link
         ];
     }
 
+    public function setHeadersHtmlForm()
+    {
+        $this->setHeadersHtml();
+        $this->headers = [
+            'Content-Type' => 'application/x-www-form-urlencoded; charset=UTF-8',
+        ];
+    }
+
     protected function disconnect()
     {
         curl_close($this->link);
@@ -105,16 +113,19 @@ class Link
      * @param int    $link
      * @param string $format
      * @param array  $data
+     * @param bool   $skipHeaders
      * @return null|Response
      */
-    public function post($link, $format = null, array $data = [])
+    public function post($link, $format = null, array $data = [], $skipHeaders = false)
     {
         $data = http_build_query($data);
 
-        if ($format == 'json') {
-            $this->setHeadersAjax();
-        } else {
-            $this->setHeadersHtml();
+        if (!$skipHeaders) {
+            if ($format == 'json') {
+                $this->setHeadersAjax();
+            } else {
+                $this->setHeadersHtml();
+            }
         }
 
 
