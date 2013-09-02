@@ -102,7 +102,6 @@ class Link
         $ret = curl_exec($this->link);
 
         if (curl_errno($this->link)) {
-            //die('Да ебать нахуй');
             throw new \Exception('Curl error: ' . curl_error($this->link));
         }
 
