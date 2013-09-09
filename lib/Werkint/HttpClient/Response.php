@@ -38,6 +38,11 @@ class Response
         return $this->dataParsed;
     }
 
+    public function getRawData()
+    {
+        return $this->data;
+    }
+
     public function getFormat()
     {
         return $this->format;
