@@ -109,7 +109,7 @@ class Link
     }
 
     /**
-     * @param int    $link
+     * @param string $link
      * @param string $format
      * @param array  $data
      * @param bool   $skipHeaders
